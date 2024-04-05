@@ -9,7 +9,6 @@ class Wordle():
         self.surrendered: bool = surrendered
         self.hard_mode: bool = hard_mode
 
-    # print representation of the object
     def __repr__(self):
         return f"Wordle(game_id={self.game_id}, solution={self.solution}, guesses={self.guesses}, solved={self.solved}, surrendered={self.surrendered}, hard_mode={self.hard_mode})"
     
@@ -36,6 +35,7 @@ class Wordle():
             "guesses": self.guesses,
             "guesses_formatted": self.get_formatted_guesses(),
             "letter_bank": self.get_formatted_alphabet(),
+            "letter_count": len(self.solution),
             "guesses_remaining": self.get_guesses_remaining(),
             "solved": self.solved,
             "surrendered": self.surrendered,
@@ -85,10 +85,10 @@ class Wordle():
             "in_solution": True | False | None,
             "in_position": True | False | None
         }
-        If the letter is used and in the solution, it's marked as True. If it's used and not in the solution, it's marked as False. If it's not used, it's marked as None. Should avoid showing the user the solution."""
+        If the letter is used and in the solution, it's marked as True. If it's used and not in the solution, it's marked as False. If it's not used, it's marked as None. Any letters ."""
         alphabet = []
         for letter in "abcdefghijklmnopqrstuvwxyz":
-            alphabet.append({"letter": letter, "used": letter in self.get_used_letters()})
+            alphabet.append({"letter": letter, "used": letter in self.get_used_letters(), "in_position": letter in self.get_correct_positions()})
 
         for letter in alphabet:
             if letter["used"]:
@@ -103,11 +103,25 @@ class Wordle():
 
     def get_used_letters(self):
         return sorted(list(set(''.join(self.guesses))))
+    
+    # create a method to see what letters are in the solution and in the right position in any of the guesses
+    def get_correct_positions(self):
+        # correct positions will be a set of letters that are in the solution and in the correct position in any of the guesses
+        correct_positions = set()
+
+        for guess in self.guesses:
+            for i, letter in enumerate(guess):
+                if letter == self.solution[i]:
+                    correct_positions.add(letter)
+
+        return sorted(list(correct_positions))
+    
 
 class WordleHelper:
     @staticmethod
     def generate_wordle(game_id, words, letter_count, hard_mode) -> Wordle:
-        solution = random.choice(words)
+        # make a random choice from the list of words where the length of the word is equal to the letter_count
+        solution = random.choice([word for word in words if len(word) == letter_count])
 
         return Wordle(game_id, solution, [], False, False, hard_mode)
     
@@ -121,6 +135,8 @@ class WordleHelper:
 
     @staticmethod
     def make_guess(words: list[str], wordle: Wordle, guess: str) -> Wordle:
+        guess = guess.lower()
+
         if wordle.is_game_over():
             raise Exception("Game is over")
         

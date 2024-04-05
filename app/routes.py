@@ -9,7 +9,6 @@ def create_routes(app):
         letter_count = request.json['letter_count']
         hard_mode = request.json.get('hard_mode', False)
         wordle = app.config['wordle_service'].generate_wordle(letter_count, hard_mode)
-        print(wordle)
         return jsonify({"game_id": wordle.game_id})
 
     @app.route('/wordle/<game_id>', methods=['GET'])
