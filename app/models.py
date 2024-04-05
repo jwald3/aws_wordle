@@ -1,4 +1,5 @@
 import random
+from .errors import GameOverError, GuessAlreadyMadeError, HardModeViolationError, InvalidGuessError
 
 class Wordle():
     def __init__(self, game_id, solution, guesses, solved, surrendered, hard_mode=False):
@@ -127,7 +128,7 @@ class WordleHelper:
     @staticmethod
     def surrender_game(wordle):
         if wordle.is_game_over():
-            raise Exception("Game is over")
+            raise GameOverError("Game is over")
         
         wordle.surrendered = True
         return wordle
@@ -137,27 +138,21 @@ class WordleHelper:
         guess = guess.lower()
 
         if wordle.is_game_over():
-            raise Exception("Game is over")
+            raise GameOverError("Game is over")
         
         if guess in wordle.guesses:
-            raise Exception("Guess already made")
+            raise GuessAlreadyMadeError("Guess already made")
         
-        # optional to hard_mode — if letters were guessed in the correct order, they need to be included in all future guesses
         if wordle.hard_mode and len(wordle.guesses) > 0:
-            # only the last guess is relevant
             last_guess = wordle.get_formatted_guesses()[-1]
-            # loop over each letter in the guess along with the last_guess array. 
             for i, letter in enumerate(guess):
-                # if the letter is in the solution, it must be in the same position as the last guess
-                if last_guess[i]['correct_position']:
-                    if letter != last_guess[i]['letter']:
-                        raise Exception("Hard mode violation")
+                if last_guess[i]['correct_position'] and letter != last_guess[i]['letter']:
+                    raise HardModeViolationError("Hard mode violation")
 
         if guess not in words:
-            raise Exception("Invalid guess")
+            raise InvalidGuessError("Invalid guess")
         
         wordle.guesses.append(guess)
-
         if guess == wordle.solution:
             wordle.solved = True
 
