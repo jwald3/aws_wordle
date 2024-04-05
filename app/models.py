@@ -2,12 +2,12 @@ import random
 
 class Wordle():
     def __init__(self, game_id, solution, guesses, solved, surrendered, hard_mode=False):
-        self.game_id: str = game_id
-        self.solution: str = solution
-        self.guesses: list[str] = guesses
-        self.solved: bool = solved
-        self.surrendered: bool = surrendered
-        self.hard_mode: bool = hard_mode
+        self.game_id = game_id
+        self.solution = solution
+        self.guesses = guesses
+        self.solved = solved
+        self.surrendered = surrendered
+        self.hard_mode = hard_mode
 
     def __repr__(self):
         return f"Wordle(game_id={self.game_id}, solution={self.solution}, guesses={self.guesses}, solved={self.solved}, surrendered={self.surrendered}, hard_mode={self.hard_mode})"
@@ -118,14 +118,14 @@ class Wordle():
 
 class WordleHelper:
     @staticmethod
-    def generate_wordle(game_id, words, letter_count, hard_mode) -> Wordle:
+    def generate_wordle(game_id, words, letter_count, hard_mode):
         # make a random choice from the list of words where the length of the word is equal to the letter_count
         solution = random.choice([word for word in words if len(word) == letter_count])
 
         return Wordle(game_id, solution, [], False, False, hard_mode)
     
     @staticmethod
-    def surrender_game(wordle: Wordle) -> Wordle:
+    def surrender_game(wordle):
         if wordle.is_game_over():
             raise Exception("Game is over")
         
@@ -133,7 +133,7 @@ class WordleHelper:
         return wordle
 
     @staticmethod
-    def make_guess(words: list[str], wordle: Wordle, guess: str) -> Wordle:
+    def make_guess(words, wordle, guess):
         guess = guess.lower()
 
         if wordle.is_game_over():
@@ -145,7 +145,7 @@ class WordleHelper:
         # optional to hard_mode — if letters were guessed in the correct order, they need to be included in all future guesses
         if wordle.hard_mode and len(wordle.guesses) > 0:
             # only the last guess is relevant
-            last_guess: str = wordle.get_formatted_guesses()[-1]
+            last_guess = wordle.get_formatted_guesses()[-1]
             # loop over each letter in the guess along with the last_guess array. 
             for i, letter in enumerate(guess):
                 # if the letter is in the solution, it must be in the same position as the last guess

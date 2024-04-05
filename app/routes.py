@@ -20,8 +20,13 @@ def create_routes(app):
     @app.route('/wordle/<game_id>/guess', methods=['POST'])
     def make_guess(game_id):
         guess = request.json['guess']
-        wordle = app.config['wordle_service'].make_guess(game_id, guess)
-        return jsonify(wordle.return_format())
+        try:
+            wordle = app.config['wordle_service'].make_guess(game_id, guess)
+            return jsonify(wordle.return_format())
+        except Exception as e:
+            print(e)
+            # return a 400 status code if the guess is invalid
+            return jsonify({"message": "Invalid guess"}), 400
 
     @app.route('/wordle/<game_id>/surrender', methods=['POST'])
     def surrender_game(game_id):

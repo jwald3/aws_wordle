@@ -13,7 +13,7 @@ def create_app(config_class=Config):
     app = Flask(__name__)
 
     # Enable CORS
-    CORS(app, resources={r'/*': {'origins': ['http://localhost:5173', 'http://localhost:5000']}})
+    CORS(app, resources={r'/*': {'origins': ['*']}})
     
     # Apply configuration settings from your config.py or environment
     app.config.from_object(config_class)
