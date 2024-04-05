@@ -26,7 +26,7 @@ def create_routes(app):
         except Exception as e:
             print(e)
             # return a 400 status code if the guess is invalid
-            return jsonify({"message": e}), 400
+            return jsonify({"message": "Invalid guess"}), 400
 
     @app.route('/wordle/<game_id>/surrender', methods=['POST'])
     def surrender_game(game_id):
