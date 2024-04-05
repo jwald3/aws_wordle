@@ -51,31 +51,30 @@ class Wordle():
         return len(self.solution) + 1 - len(self.guesses)
 
     def get_formatted_guesses(self):
-        """Return the guesses as a list of objects with the following format:
-        {
-            "letter": "a",
-            "in_solution": True | False,
-            "correct_position": True | False
-        }
-        The guesses enable frontend to display the guesses in the same order with formatted cells for each letter.
-        """
         formatted_guesses = []
-        for idx, guess in enumerate(self.guesses):
-            # guesses are single letters, so each letter needs to be tested against the solution
+        for guess in self.guesses:
             formatted_guess = []
-            for i, letter in enumerate(self.guesses[idx]):
-                # if the letter is in the word, there's a chance it's in the correct position
-                if letter in self.solution:
-                    #  if the letter is in the same position as the solution, it's correct
-                    if letter == self.solution[i]:
-                        formatted_guess.append({"letter": letter, "in_solution": True, "correct_position": True})
-                    else:
-                        formatted_guess.append({"letter": letter, "in_solution": True, "correct_position": False})
+            solution_letters = list(self.solution)  # Create a mutable list of solution letters
+            
+            # First pass: Mark correct positions
+            for i, letter in enumerate(guess):
+                if letter == solution_letters[i]:
+                    formatted_guess.append({"letter": letter, "in_solution": True, "correct_position": True})
+                    solution_letters[i] = None  # Remove from consideration for 'present' marking
                 else:
                     formatted_guess.append({"letter": letter, "in_solution": False, "correct_position": False})
-            formatted_guesses.append(formatted_guess)
 
+            # Second pass: Mark present but in wrong position, avoiding double-counting
+            for i, entry in enumerate(formatted_guess):
+                letter = guess[i]
+                if not entry['correct_position'] and letter in solution_letters:
+                    formatted_guess[i]["in_solution"] = True
+                    formatted_guess[i]["correct_position"] = False  # Redundant but clarifies logic
+                    solution_letters[solution_letters.index(letter)] = None  # Mark as used
+            
+            formatted_guesses.append(formatted_guess)
         return formatted_guesses
+
 
     def get_formatted_alphabet(self):
         """Return the alphabet as a list of objects with the following format:

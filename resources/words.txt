@@ -1140,6 +1140,7 @@ clay
 cleaner
 clearance
 clearing
+clear
 cleat
 cleavage
 clef
@@ -5781,6 +5782,7 @@ steam
 steamroller
 steel
 steeple
+steer
 stem
 stench
 stencil
@@ -6799,3 +6801,14 @@ zoologist
 zoology
 zoot-suit
 zucchini
+alone
+flask
+found
+harsh
+drape
+brash
+aroma
+mount
+stink
+woven
+after
