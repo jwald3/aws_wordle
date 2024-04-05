@@ -143,6 +143,9 @@ class WordleHelper:
         if guess in wordle.guesses:
             raise GuessAlreadyMadeError("Guess already made")
         
+        if len(guess) != len(wordle.solution):
+            raise InvalidGuessError("Invalid guess")
+        
         if wordle.hard_mode and len(wordle.guesses) > 0:
             last_guess = wordle.get_formatted_guesses()[-1]
             for i, letter in enumerate(guess):
