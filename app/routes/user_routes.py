@@ -7,7 +7,7 @@ def create_user_routes(app):
         password = request.json['password']
         try:
             user = app.config['user_service'].create_user(username, password)
-            return jsonify({"user_id": user.user_id})
+            return jsonify({"user_id": user.get('user_id'), "token": user.get('token')})
         except ValueError as e:
             return jsonify({"message": str(e)}), 400
         

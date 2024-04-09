@@ -11,7 +11,7 @@ class UserService:
         try:
             user = User.create_new_user(username, password)
             self.user_repository.create_user(user)
-            return user
+            return {"user_id": user.get_user_id(), "token": self.create_jwt(user.get_user_id())}
         except ValueError as e:
             raise ValueError(f"Error creating user: {e}")
         
