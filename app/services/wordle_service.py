@@ -1,4 +1,4 @@
-from app.models import WordleHelper, Wordle
+from ..models.wordle_models import WordleHelper, Wordle
 import uuid
 
 class WordleService:

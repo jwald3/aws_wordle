@@ -1,5 +1,5 @@
 import random
-from .errors import GameOverError, GuessAlreadyMadeError, HardModeViolationError, InvalidGuessError
+from ..errors import GameOverError, GuessAlreadyMadeError, HardModeViolationError, InvalidGuessError
 
 class Wordle():
     def __init__(self, game_id, solution, guesses, solved, surrendered, hard_mode=False):
