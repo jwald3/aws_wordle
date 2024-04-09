@@ -1,9 +1,17 @@
 import random
 from .errors import GameOverError, GuessAlreadyMadeError, HardModeViolationError, InvalidGuessError
+from datetime import datetime
+import hashlib
+import secrets
+import time
+import os
+from pytz import timezone
+
 
 class Wordle():
-    def __init__(self, game_id, solution, guesses, solved, surrendered, hard_mode=False):
+    def __init__(self, game_id, user_token, solution, guesses, solved, surrendered, hard_mode=False):
         self.game_id = game_id
+        self.user_token = user_token
         self.solution = solution
         self.guesses = guesses
         self.solved = solved
@@ -11,13 +19,15 @@ class Wordle():
         self.hard_mode = hard_mode
 
     def __repr__(self):
-        return f"Wordle(game_id={self.game_id}, solution={self.solution}, guesses={self.guesses}, solved={self.solved}, surrendered={self.surrendered}, hard_mode={self.hard_mode})"
+        return f"Wordle(game_id={self.game_id}, user_token={self.user_token}, solution={self.solution}, guesses={self.guesses}, solved={self.solved}, surrendered={self.surrendered}, hard_mode={self.hard_mode})"
     
     def __str__(self):
-        return f"Wordle(game_id={self.game_id}, solution={self.solution}, guesses={self.guesses}, solved={self.solved}, surrendered={self.surrendered}, hard_mode={self.hard_mode})"
+        return f"Wordle(game_id={self.game_id}, user_token={self.user_token}, solution={self.solution}, guesses={self.guesses}, solved={self.solved}, surrendered={self.surrendered}, hard_mode={self.hard_mode})"
 
     def to_dict(self):
         return {
+            "game_id": self.game_id,
+            "user_token": self.user_token,
             "solution": self.solution,
             "guesses": self.guesses,
             "solved": self.solved,
@@ -27,7 +37,7 @@ class Wordle():
     
     @staticmethod
     def from_dict(wordle_dict):
-        return Wordle(wordle_dict['game_id'], wordle_dict['solution'], wordle_dict['guesses'], wordle_dict['solved'], wordle_dict['surrendered'], wordle_dict['hard_mode'])
+        return Wordle(wordle_dict['game_id'], wordle_dict['user_token'], wordle_dict['solution'], wordle_dict['guesses'], wordle_dict['solved'], wordle_dict['surrendered'], wordle_dict['hard_mode'])
 
     def return_format(self):
         return {
@@ -160,3 +170,45 @@ class WordleHelper:
             wordle.solved = True
 
         return wordle
+
+class User:
+    def __init__(self, user_id, token):
+        self.user_id = user_id
+        self.token = token
+        self.created_at = datetime.now(timezone.utc)
+
+    def __repr__(self):
+        return f"User(user_id={self.user_id}, token={self.token}, created_at={self.created_at})"
+
+    def __str__(self):
+        return f"User ID: {self.user_id}, Token: {self.token}, Created At: {self.created_at}"
+
+    def to_dict(self):
+        """Converts the user object to a dictionary suitable for database operations."""
+        return {
+            "user_id": self.user_id,
+            "token": self.token,
+            "created_at": self.created_at
+        }
+
+    @staticmethod
+    def from_dict(user_dict):
+        """Creates a User object from a dictionary."""
+        return User(
+            user_id=user_dict['user_id'],
+            token=user_dict['token'],
+            created_at=user_dict.get('created_at')
+        )
+
+    def generate_token(self):
+        """Generates a secure token."""
+        payload = f"{self.user_id}{time.time()}{secrets.token_hex(16)}"
+        secret_key = os.environ.get("WORDLE_SECRET_KEY")
+        token = hashlib.sha256(f"{payload}{secret_key}".encode()).hexdigest()
+        self.token = token
+        return token
+
+    def validate_token(self, input_token):
+        """Validates the provided token against the user's stored token."""
+        return self.token == input_token
+

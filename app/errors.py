@@ -9,3 +9,15 @@ class HardModeViolationError(Exception):
 
 class InvalidGuessError(Exception):
     pass
+
+class ResourceNotFoundError(Exception):
+    pass
+
+class UnauthorizedUserError(Exception):
+    pass
+
+class UserRegistrationError(Exception):
+    pass
+
+class UserLoginError(Exception):
+    pass

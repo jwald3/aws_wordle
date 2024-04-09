@@ -1,9 +1,6 @@
 from flask import jsonify, request
-from .models import Wordle, WordleHelper
-from .wordle_repository import WordleRepository
-from .wordle_service import WordleService
-# import the errors from resources/errors.py
-from .errors import GameOverError, GuessAlreadyMadeError, HardModeViolationError, InvalidGuessError
+from .models import Wordle
+from .errors import GameOverError, GuessAlreadyMadeError, HardModeViolationError, InvalidGuessError, UnauthorizedUserError
 
 def create_routes(app):
     @app.route('/wordle', methods=['POST'])

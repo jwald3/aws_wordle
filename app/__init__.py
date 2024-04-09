@@ -20,7 +20,7 @@ def create_app(config_class=Config):
 
     # Initialize database connection or other services
     dynamodb = boto3.resource('dynamodb', region_name=app.config['DYNAMODB_REGION'])
-    table = dynamodb.Table(app.config['DYNAMODB_TABLE'])
+    table = dynamodb.Table(app.config['DYNAMODB_WORDLE_TABLE'])
 
     words_path = Path(__file__).parent.parent / 'resources' / 'words.txt'
 
