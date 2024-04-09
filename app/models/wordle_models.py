@@ -19,6 +19,8 @@ class Wordle():
 
     def to_dict(self):
         return {
+            "game_id": self.game_id,
+            "user_id": self.user_id,
             "solution": self.solution,
             "guesses": self.guesses,
             "solved": self.solved,
@@ -28,11 +30,18 @@ class Wordle():
     
     @staticmethod
     def from_dict(wordle_dict):
+        if not wordle_dict:
+            return None
+        
+        print(wordle_dict)
+
         return Wordle(wordle_dict['game_id'], wordle_dict['user_id'], wordle_dict['solution'], wordle_dict['guesses'], wordle_dict['solved'], wordle_dict['surrendered'], wordle_dict['hard_mode'])
 
     def return_format(self):
         return {
             # if the game is over, the solution should be returned
+            "game_id": self.game_id,
+            "user_id": self.user_id,
             "solution": self.solution if self.is_game_over() else None,
             "guesses": self.guesses,
             "guesses_formatted": self.get_formatted_guesses(),

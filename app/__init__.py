@@ -46,6 +46,9 @@ def create_app(config_class=Config):
     @app.before_request
     def before_request_func():
         # Exclude the login and registration routes from requiring JWT
+        if request.method == "OPTIONS":
+            return app.response_class(status=200)
+        
         if request.endpoint not in ['login_user', 'register_user']:
             token = request.headers.get('Authorization', None)
             if token:

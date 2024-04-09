@@ -26,7 +26,17 @@ class WordleService:
     def make_guess(self, game_id, user_id, guess):
         wordle_dict = self.wordle_repository.get_wordle(game_id, user_id)
         wordle = Wordle.from_dict(wordle_dict)
+
+        print(wordle)
+
+        if not wordle:
+            return None
+
         wordle = WordleHelper.make_guess(self.word_list, wordle, guess)
+
+        print(wordle)
+        print(wordle.to_dict())
+
         self.wordle_repository.update_wordle(game_id, wordle.to_dict())
         return wordle
     
@@ -39,6 +49,10 @@ class WordleService:
     
     def get_wordle(self, game_id, user_id):
         wordle_dict = self.wordle_repository.get_wordle(game_id, user_id)
+
+        if not wordle_dict:
+            return None
+
         wordle = Wordle.from_dict(wordle_dict)
         return wordle
     

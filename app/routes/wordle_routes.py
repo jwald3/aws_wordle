@@ -22,6 +22,9 @@ def create_routes(app):
         user_id = getattr(request, "user_id", None)
         wordle: dict = app.config['wordle_service'].wordle_repository.get_wordle(game_id, user_id)
         wordle_obj = Wordle.from_dict(wordle)
+        if not wordle_obj:
+            return jsonify({"message": "Game not found"}), 404
+
         return jsonify(wordle_obj.return_format())
 
     @app.route('/wordle/<game_id>/guess', methods=['POST'])
@@ -31,6 +34,7 @@ def create_routes(app):
         guess = request.json['guess']
         try:
             wordle = app.config['wordle_service'].make_guess(game_id, user_id, guess)
+            print(wordle)
             return jsonify(wordle.return_format())
         except GameOverError:
             return jsonify({"message": "Game is over"}), 400
@@ -43,7 +47,6 @@ def create_routes(app):
         except Exception as e:  # Catch-all for any other unexpected errors
             print(e)
             return jsonify({"message": "An unexpected error occurred"}), 500
-
 
     @app.route('/wordle/<game_id>/surrender', methods=['POST'])
     @jwt_required

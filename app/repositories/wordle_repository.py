@@ -20,8 +20,8 @@ class WordleRepository:
         return response.get('Items')
 
     def update_wordle(self, game_id, updates):
-        update_expression = 'SET ' + ', '.join([f'{key} = :{key}' for key in updates.keys()])
-        expression_attribute_values = {f':{key}': value for key, value in updates.items()}
+        update_expression = 'SET ' + ', '.join([f'{key} = :{key}' for key in updates.keys() if key != 'game_id'])
+        expression_attribute_values = {f':{key}': value for key, value in updates.items() if key != 'game_id'}
 
         response = self.table.update_item(
             Key={'game_id': game_id},
