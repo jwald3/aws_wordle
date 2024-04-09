@@ -16,8 +16,10 @@ def create_user_routes(app):
         username = request.json['username']
         password = request.json['password']
         user = app.config['user_service'].login_user(username, password)
+
+        print(user)
         if user:
-            return jsonify({"user_id": user.user_id})
+            return jsonify({"user_id": user.get('user_id'), "token": user.get('token')})
         return jsonify({"message": "Invalid username or password"}), 400
     
     @app.route('/user/<user_id>', methods=['GET'])

@@ -2,8 +2,9 @@ import random
 from ..errors import GameOverError, GuessAlreadyMadeError, HardModeViolationError, InvalidGuessError
 
 class Wordle():
-    def __init__(self, game_id, solution, guesses, solved, surrendered, hard_mode=False):
+    def __init__(self, game_id, user_id, solution, guesses, solved, surrendered, hard_mode=False):
         self.game_id = game_id
+        self.user_id = user_id
         self.solution = solution
         self.guesses = guesses
         self.solved = solved
@@ -11,10 +12,10 @@ class Wordle():
         self.hard_mode = hard_mode
 
     def __repr__(self):
-        return f"Wordle(game_id={self.game_id}, solution={self.solution}, guesses={self.guesses}, solved={self.solved}, surrendered={self.surrendered}, hard_mode={self.hard_mode})"
+        return f"Wordle(game_id={self.game_id}, user_id={self.user_id}, solution={self.solution}, guesses={self.guesses}, solved={self.solved}, surrendered={self.surrendered}, hard_mode={self.hard_mode})"
     
     def __str__(self):
-        return f"Wordle(game_id={self.game_id}, solution={self.solution}, guesses={self.guesses}, solved={self.solved}, surrendered={self.surrendered}, hard_mode={self.hard_mode})"
+        return f"Wordle(game_id={self.game_id}, user_id={self.user_id}, solution={self.solution}, guesses={self.guesses}, solved={self.solved}, surrendered={self.surrendered}, hard_mode={self.hard_mode})"
 
     def to_dict(self):
         return {
@@ -27,7 +28,7 @@ class Wordle():
     
     @staticmethod
     def from_dict(wordle_dict):
-        return Wordle(wordle_dict['game_id'], wordle_dict['solution'], wordle_dict['guesses'], wordle_dict['solved'], wordle_dict['surrendered'], wordle_dict['hard_mode'])
+        return Wordle(wordle_dict['game_id'], wordle_dict['user_id'], wordle_dict['solution'], wordle_dict['guesses'], wordle_dict['solved'], wordle_dict['surrendered'], wordle_dict['hard_mode'])
 
     def return_format(self):
         return {
@@ -119,11 +120,11 @@ class Wordle():
 
 class WordleHelper:
     @staticmethod
-    def generate_wordle(game_id, words, letter_count, hard_mode):
+    def generate_wordle(game_id, user_id, words, letter_count, hard_mode):
         # make a random choice from the list of words where the length of the word is equal to the letter_count
         solution = random.choice([word for word in words if len(word) == letter_count])
 
-        return Wordle(game_id, solution, [], False, False, hard_mode)
+        return Wordle(game_id, user_id, solution, [], False, False, hard_mode)
     
     @staticmethod
     def surrender_game(wordle):

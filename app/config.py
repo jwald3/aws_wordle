@@ -3,3 +3,4 @@ class Config:
     DYNAMODB_REGION = 'us-east-1'
     DYNAMODB_WORDLE_TABLE = 'Wordle'
     DYNAMODB_USER_TABLE = 'UserTokens'
+    SECRET_KEY = 'secret'

@@ -1,4 +1,5 @@
 from ..models.user import User
+import jwt
 import uuid
 
 class UserService:
@@ -16,7 +17,11 @@ class UserService:
         
     def login_user(self, username, password):
         """Login a user with a username and password. Returns the User object if successful, otherwise None."""
-        return self.user_repository.login_user(username, password)
+        user = self.user_repository.login_user(username, password)
+        if user:
+            token = self.create_jwt(user.user_id)
+            return {"user_id": user.user_id, "token": token}
+        return None
     
     def get_user_by_username(self, username):
         """Retrieve a user by their username."""
@@ -25,3 +30,7 @@ class UserService:
     def get_user_by_user_id(self, user_id):
         """Retrieve a user by their user_id."""
         return self.user_repository.get_user_by_user_id(user_id)
+
+    def create_jwt(self, user_id):
+        """Create a JSON Web Token (JWT) for the user."""
+        return jwt.encode({'user_id': user_id}, 'secret', algorithm='HS256')
